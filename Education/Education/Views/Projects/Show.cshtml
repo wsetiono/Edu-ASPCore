@@ -1,0 +1,95 @@
+﻿@model Education.ViewModels.ProjectShow
+@{
+    ViewData["Title"] = "Show";
+}
+
+@*<h1>@Model.project.Name</h1>
+
+@if (Model.project.Picture != null)
+{
+    <img src="~/images/@Model.project.Picture"
+         height="300" width="600"
+         asp-append-version="true" />
+}
+else
+{
+    <img src="~/images/not-available.jpg"
+         height="300" width="600"
+         asp-append-version="true" />
+
+}
+
+
+<p>@Model.project.Content</p>
+
+
+<ul>
+    @foreach (var item in Model.tasks)
+    {
+        <li>
+            @item.Note
+        </li>
+    }
+</ul>*@
+
+<div class="row">
+    <div class="col m4">
+        <div class="card z-depth-2">
+            <div class="center">
+                <h1>Rp @Model.project.Price</h1>
+            </div>
+            @*<div class="card-action center">
+                <button class="btn waves-effect waves-light pink darken-2">
+                    Take this Project    
+                </button>
+            </div>*@
+        </div>
+    </div>
+
+    <div class="col m8">
+        <div class="card z-depth-2">
+            <div class="card-image">
+                @if (Model.project.Picture != null)
+                {
+                    <img src="@Model.project.Picture"
+                         height="300" width="600"
+                         asp-append-version="true" />
+                }
+                @*else
+                {
+                    <img src="~/images/not-available.jpg"
+                         height="300" width="600"
+                         asp-append-version="true" />
+
+                }*@
+            </div>
+            <div class="card-content grey-text text-darken-4">
+                <h5>@Model.project.Name</h5>
+                <hr />
+                @Model.project.Content
+
+                <div class="collection">
+                    @foreach (var item in Model.tasks)
+                    {
+                        @*@if(item.Header == true)
+                        {*@
+                            <div class="collection-item active">
+                                <i class="mdi-social-school">@item.Title</i>
+                            </div>
+                        @*}
+                        else
+                        {*@
+                            <div class="collection-item">
+                                @item.Note
+                            </div>
+                        @*}*@
+                     }
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

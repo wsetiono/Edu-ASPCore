@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Education.Models.Project>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+    <div class="row">
+        <br />
+        @foreach (var item in Model)
+        {
+            <div class="col s12 m6">
+                <div class="card">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        @if (item.Picture != null)
+                        {
+
+                            <a asp-controller="Projects" asp-action="Show" asp-route-id="@item.ID">
+                                <img src="@item.Picture" asp-append-version="true" height="300px" />
+                            </a>
+
+                        }
+                        @*else
+                        {
+                            <a asp-controller="Projects" asp-action="Show" asp-route-id="@item.ID">
+                                <img src="~/images/not-available.jpg" asp-append-version="true" height="300px" />
+                            </a>
+                         }*@
+                        </div>
+
+                    <div class="card-content">
+                        <span class="card-title grey-text text-darken-4">
+                            <a asp-controller="Projects" asp-action="Show" asp-route-id="@item.ID">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>

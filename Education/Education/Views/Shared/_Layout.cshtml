@@ -1,0 +1,199 @@
+﻿@using Microsoft.AspNetCore.Identity
+@*@inject SignInManager<AppUser> SignInManager
+    @inject UserManager<AppUser> UserManager*@
+@using Education.Areas.Identity.Models
+@using Education.Helper
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+@{
+    AppUser user = null;
+    string gravatarUrl = null;
+    IdentityRole role = null;
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    user = await UserManager.GetUserAsync(User);
+    gravatarUrl = Helper.GetGravatarUrl(user.Email);
+    role = await RoleManager.FindByIdAsync("05b36818-17ee-4e03-a004-5cc1806fb4b2");
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-signin-client_id" content="1015782070665-75ov0s03csl46bpevqi7ikiotk94fgaq.apps.googleusercontent.com">
+    <title>@ViewData["Title"] - Education</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li class="divider"></li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("About", "Pages", new { area = "" })">
+                <button id="btnLogout" type="submit">Logout</button>
+            </form>
+        </li>
+    </ul>
+
+    <ul id="dropdown2" class="dropdown-content">
+        <li class="divider"></li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("About", "Pages", new { area = "" })">
+                <button id="btnLogout" type="submit">Logout</button>
+            </form>
+        </li>
+    </ul>
+
+    <ul id="dropdown1b" class="dropdown-content">
+        <li class="divider"></li>
+        <li class="nav-item"><a asp-controller="Projects" asp-action="Index">Projects</a></li>
+        <li class="nav-item"><a asp-controller="Tasks" asp-action="Index">Tasks</a></li>
+        <li class="nav-item"><a asp-controller="Users" asp-action="Index">Users</a></li>
+        <li class="nav-item"><a asp-controller="Roles" asp-action="Index">Roles</a></li>
+    </ul>
+
+    <ul id="dropdown2b" class="dropdown-content">
+        <li class="divider"></li>
+        <li class="nav-item"><a asp-controller="Projects" asp-action="Index">Projects</a></li>
+        <li class="nav-item"><a asp-controller="Tasks" asp-action="Index">Tasks</a></li>
+        <li class="nav-item"><a asp-controller="Users" asp-action="Index">Users</a></li>
+        <li class="nav-item"><a asp-controller="Roles" asp-action="Index">Roles</a></li>
+    </ul>
+
+    <header>
+        <nav class="purple darken-4 z-depth-2">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="brand-logo">Education</a>
+                    <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a asp-controller="Projects" asp-action="List">Courses</a></li>
+                        <li><a asp-controller="Pages" asp-action="About">About</a></li>
+
+                        @{
+                            if (!SignInManager.IsSignedIn(User))
+                            {
+                                <li><a asp-area="Identity" asp-page="/Account/Register">Sign Up</a></li>
+                                <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                            }
+                            else
+                            {
+
+                                bool isCurrentUserRole_Admin = await UserManager.IsInRoleAsync(user, role.Name) ? true : false;
+
+                                if (isCurrentUserRole_Admin == true)
+                                {
+
+                                    <li>
+                                        <a class="dropdown-trigger" href="#!" data-target="dropdown1b">
+                                            Backend Dashboard<i class="material-icons right">arrow_drop_down</i>
+                                        </a>
+                                    </li>
+
+                                }
+
+                                <li>
+                                    <a class="dropdown-trigger" href="#!" data-target="dropdown1">
+                                        <img src="@gravatarUrl" asp-append-version="true" class="circle responsive-img" style="width: 40px">
+                                        @(user.Name)<i class="material-icons right">arrow_drop_down</i>
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li><a asp-controller="Projects" asp-action="List">Courses</a></li>
+            <li><a asp-controller="Pages" asp-action="About">About</a></li>
+
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <li><a asp-area="Identity" asp-page="/Account/Register">Sign Up</a></li>
+                <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+            }
+            else
+            {
+
+                bool isCurrentUserRole_Admin = await UserManager.IsInRoleAsync(user, role.Name) ? true : false;
+
+                if (isCurrentUserRole_Admin == true)
+                {
+
+                    <li>
+                        <a class="dropdown-trigger" href="#!" data-target="dropdown2b">
+                            Backend Dashboard<i class="material-icons right">arrow_drop_down</i>
+                        </a>
+                    </li>
+
+                }
+
+                <li>
+                    <a class="dropdown-trigger" href="#!" data-target="dropdown2">
+                        <img src="@gravatarUrl" asp-append-version="true" class="circle responsive-img" style="width: 40px">
+                        @(user.Name)<i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </header>
+
+    <main>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="page-footer purple darken-4">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Education</h5>
+                    <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="white-text">Social</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="#!">Twitter</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Facebook</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Google Plus</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                © 2020 Copyright Education
+                <a asp-controller="Pages" asp-action="About" class="grey-text text-lighten-4 right">About Us</a>
+
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+    <script>
+        $('.sidenav').sidenav();
+        $(".dropdown-trigger").dropdown();
+    </script>
+</body>
+</html>
